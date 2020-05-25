@@ -1,0 +1,73 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "EventBroker.Grpc";
+
+package events_service;
+
+service EventsService {
+  rpc Init (InitRequest) returns (InitResponse);
+  rpc Subscribe (SubscribeRequest) returns (SubscribeResponse);
+  rpc SubscribeMany (SubscribeManyRequest) returns (SubscribeResponse);
+  rpc Unsubscribe (UnsubscribeRequest) returns (UnsubscribeResponse);
+  rpc EmitEvent (EmitEventRequest) returns (EmitEventAcknowledgement);
+  rpc ListenForEvents (ListenRequest) returns (stream EventData);
+}
+
+message InitRequest {
+    string client_id = 1;
+    string client_type = 2;
+}
+
+message InitResponse {
+}
+
+message SubscriptionData {
+  string event_name = 1;
+  enum ConsumptionType {
+    CONSUME_ALL = 0;
+    ONE_EVENT_PER_SERVICE_TYPE = 1;
+  }
+  ConsumptionType type = 2;
+}
+
+message SubscribeRequest {
+  string session_id = 1;
+  SubscriptionData subscription = 2;
+}
+
+message SubscribeManyRequest {
+    string session_id = 1;
+    repeated SubscriptionData subscriptions = 2;
+}
+
+message SubscribeResponse {
+}
+
+message UnsubscribeRequest {
+    string session_id = 1;
+    string event_name = 2;
+}
+
+message UnsubscribeResponse {
+}
+
+message EventData {
+  string event_name = 1;
+  repeated int32 property_positions = 2;
+  repeated string property_names = 3;
+  bytes data = 4;
+}
+
+message EmitEventRequest {
+  string session_id = 1;
+  EventData event_data = 2;
+  repeated string services_handled = 3;
+}
+
+message EmitEventAcknowledgement {
+  repeated string services_handled = 1;
+}
+
+message ListenRequest {
+    string session_id = 1;
+}
