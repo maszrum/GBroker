@@ -7,7 +7,7 @@ namespace EventBroker.Client.AspNetCore
 {
 	public static class AspNetCoreExtensionMethods
 	{
-		public static IServiceCollection AddEventBrokerService(this IServiceCollection services)
+		public static IServiceCollection AddEventsService(this IServiceCollection services)
 		{
 			services.AddHostedService<EventBrokerHostedService>();
 
@@ -22,20 +22,20 @@ namespace EventBroker.Client.AspNetCore
 
 			foreach (var handlerType in handlerTypes)
 			{
-				AddEventBrokerHandler(services, handlerType);
+				AddEventHandler(services, handlerType);
 			}
 
 			return services;
 		}
 
-		public static IServiceCollection AddEventBrokerHandler(this IServiceCollection services, Type handlerType)
+		public static IServiceCollection AddEventHandler(this IServiceCollection services, Type handlerType)
 		{
 			services.AddScoped(typeof(IEventBrokerHandler), handlerType);
 
 			return services;
 		}
 
-		public static IServiceCollection AddEventBrokerHandler<THandler>(
+		public static IServiceCollection AddEventHandler<THandler>(
 			this IServiceCollection services) where THandler : class, IEventBrokerHandler
 		{
 			services.AddScoped<IEventBrokerHandler, THandler>();

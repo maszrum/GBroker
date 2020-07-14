@@ -1,2 +1,3 @@
 # GBroker
-gRPC based event broker
+gRPC based event broker.
+
