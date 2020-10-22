@@ -5,14 +5,14 @@ using EventBroker.Client.Interceptor;
 
 namespace EventBroker.Client
 {
-	public sealed class EventsClientBuilder : IDisposable
+	public sealed class EventsClientBuilder
 	{
-		private List<Action<EventsClientBuilder>> _onBuildingActions = new List<Action<EventsClientBuilder>>();
+		private readonly List<Action<EventsClientBuilder>> _onBuildingActions = new List<Action<EventsClientBuilder>>();
 
-		private HashSet<IEventsSink> _sinks = new HashSet<IEventsSink>();
-		private HashSet<IEventsSource> _sources = new HashSet<IEventsSource>();
-		private HashSet<IEventInterceptor> _interceptors = new HashSet<IEventInterceptor>();
-		private ExceptionsCatcher _exceptionsCatcher = new ExceptionsCatcher();
+		private readonly HashSet<IEventsSink> _sinks = new HashSet<IEventsSink>();
+		private readonly HashSet<IEventsSource> _sources = new HashSet<IEventsSource>();
+		private readonly HashSet<IEventInterceptor> _interceptors = new HashSet<IEventInterceptor>();
+		private readonly ExceptionsCatcher _exceptionsCatcher = new ExceptionsCatcher();
 
 		public string ServiceIdentificator { get; private set; }
  
@@ -75,16 +75,6 @@ namespace EventBroker.Client
 				throw new ArgumentNullException(nameof(callback));
 			}
 			_onBuildingActions.Add(callback);
-		}
-
-		public void Dispose()
-		{
-			_onBuildingActions.Clear();
-			_onBuildingActions = null;
-			_sinks = null;
-			_sources = null;
-			_interceptors = null;
-			_exceptionsCatcher = null;
 		}
 	}
 }
