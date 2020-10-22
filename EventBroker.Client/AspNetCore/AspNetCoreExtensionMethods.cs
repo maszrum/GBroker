@@ -5,59 +5,59 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EventBroker.Client.AspNetCore
 {
-	public static class AspNetCoreExtensionMethods
-	{
-		public static EventsClientBuilder AddEventsClient(this IServiceCollection services)
-		{
-			var builder = new EventsClientBuilder();
+    public static class AspNetCoreExtensionMethods
+    {
+        public static EventsClientBuilder AddEventsClient(this IServiceCollection services)
+        {
+            var builder = new EventsClientBuilder();
 
-			services.AddSingleton(builder);
+            services.AddSingleton(builder);
 
-			services.AddSingleton(serviceProvider =>
-			{
-				var clientBuilder = serviceProvider.GetRequiredService<EventsClientBuilder>();
+            services.AddSingleton(serviceProvider =>
+            {
+                var clientBuilder = serviceProvider.GetRequiredService<EventsClientBuilder>();
 
-				return clientBuilder.Build();
-			});
+                return clientBuilder.Build();
+            });
 
-			services.AddSingleton(
-				serviceProvider => serviceProvider.GetRequiredService<IEventBrokerClient>().Consumer);
+            services.AddSingleton(
+                serviceProvider => serviceProvider.GetRequiredService<IEventBrokerClient>().Consumer);
 
-			services.AddSingleton(
-				serviceProvider => serviceProvider.GetRequiredService<IEventBrokerClient>().Producer);
+            services.AddSingleton(
+                serviceProvider => serviceProvider.GetRequiredService<IEventBrokerClient>().Producer);
 
-			services.AddHostedService<EventBrokerHostedService>();
+            services.AddHostedService<EventBrokerHostedService>();
 
-			return builder;
-		}
+            return builder;
+        }
 
-		public static IServiceCollection AddEventsHandlers(this IServiceCollection services, Assembly fromAssembly)
-		{
-			var handlerTypes = fromAssembly
-				.GetTypes()
-				.Where(t => t.IsAssignableFrom(typeof(IEventBrokerHandler)) && !t.IsAbstract);
+        public static IServiceCollection AddEventsHandlers(this IServiceCollection services, Assembly fromAssembly)
+        {
+            var handlerTypes = fromAssembly
+                .GetTypes()
+                .Where(t => t.IsAssignableFrom(typeof(IEventBrokerHandler)) && !t.IsAbstract);
 
-			foreach (var handlerType in handlerTypes)
-			{
-				AddEventHandler(services, handlerType);
-			}
+            foreach (var handlerType in handlerTypes)
+            {
+                AddEventHandler(services, handlerType);
+            }
 
-			return services;
-		}
+            return services;
+        }
 
-		public static IServiceCollection AddEventHandler(this IServiceCollection services, Type handlerType)
-		{
-			services.AddScoped(typeof(IEventBrokerHandler), handlerType);
+        public static IServiceCollection AddEventHandler(this IServiceCollection services, Type handlerType)
+        {
+            services.AddScoped(typeof(IEventBrokerHandler), handlerType);
 
-			return services;
-		}
+            return services;
+        }
 
-		public static IServiceCollection AddEventHandler<THandler>(
-			this IServiceCollection services) where THandler : class, IEventBrokerHandler
-		{
-			services.AddScoped<IEventBrokerHandler, THandler>();
+        public static IServiceCollection AddEventHandler<THandler>(
+            this IServiceCollection services) where THandler : class, IEventBrokerHandler
+        {
+            services.AddScoped<IEventBrokerHandler, THandler>();
 
-			return services;
-		}
-	}
+            return services;
+        }
+    }
 }
