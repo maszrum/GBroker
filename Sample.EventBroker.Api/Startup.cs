@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 
 namespace Sample.EventBroker.Api
 {
-    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)

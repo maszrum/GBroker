@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace Sample.EventBroker.Api
 {
-#pragma warning disable CA1052
     public class Program
-#pragma warning restore CA1052
     {
         public static void Main(string[] args)
         {
