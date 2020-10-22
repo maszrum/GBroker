@@ -60,13 +60,10 @@ namespace Tests.EventBroker.Integration.Core
 		{
 			var channel = CreateChannel();
 
-			IEventBrokerClient eventBrokerClient;
-			using (var builder = new EventsClientBuilder())
-			{
-				builder.Named(serviceId);
-				builder.WithGrpc(channel);
-				eventBrokerClient = builder.Build();
-			}
+			var eventBrokerClient = new EventsClientBuilder()
+				.Named(serviceId)
+				.WithGrpc(channel)
+				.Build();
 
 			return eventBrokerClient;
 		}
