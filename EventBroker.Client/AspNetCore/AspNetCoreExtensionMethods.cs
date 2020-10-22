@@ -7,11 +7,28 @@ namespace EventBroker.Client.AspNetCore
 {
 	public static class AspNetCoreExtensionMethods
 	{
-		public static IServiceCollection AddEventsService(this IServiceCollection services)
+		public static EventsClientBuilder AddEventsClient(this IServiceCollection services)
 		{
+			var builder = new EventsClientBuilder();
+
+			services.AddSingleton(builder);
+
+			services.AddSingleton(serviceProvider =>
+			{
+				var clientBuilder = serviceProvider.GetRequiredService<EventsClientBuilder>();
+
+				return clientBuilder.Build();
+			});
+
+			services.AddSingleton(
+				serviceProvider => serviceProvider.GetRequiredService<IEventBrokerClient>().Consumer);
+
+			services.AddSingleton(
+				serviceProvider => serviceProvider.GetRequiredService<IEventBrokerClient>().Producer);
+
 			services.AddHostedService<EventBrokerHostedService>();
 
-			return services;
+			return builder;
 		}
 
 		public static IServiceCollection AddEventsHandlers(this IServiceCollection services, Assembly fromAssembly)
